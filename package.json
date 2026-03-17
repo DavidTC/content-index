@@ -45,14 +45,10 @@
   },
   "peerDependencies": {
     "@jackyzha0/quartz": "^4.5.2",
-    "hast-util-to-html": "^9.0.0",
     "vfile": "^6.0.3"
   },
   "peerDependenciesMeta": {
     "@jackyzha0/quartz": {
-      "optional": true
-    },
-    "hast-util-to-html": {
       "optional": true
     },
     "vfile": {
