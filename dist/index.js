@@ -1,8 +1,6 @@
 import path from 'path';
 import fs from 'fs/promises';
 import { joinSegments } from '@quartz-community/types';
-import { escapeHTML, simplifySlug } from '@quartz-community/utils';
-import { getDate } from '@quartz-community/utils/sort';
 
 var __defProp = Object.defineProperty;
 var __export = (target, all2) => {
@@ -10,29 +8,23 @@ var __export = (target, all2) => {
     __defProp(target, name, { get: all2[name], enumerable: true });
 };
 
-// node_modules/html-void-elements/index.js
-var htmlVoidElements = [
-  "area",
-  "base",
-  "basefont",
-  "bgsound",
-  "br",
-  "col",
-  "command",
-  "embed",
-  "frame",
-  "hr",
-  "image",
-  "img",
-  "input",
-  "keygen",
-  "link",
-  "meta",
-  "param",
-  "source",
-  "track",
-  "wbr"
-];
+// node_modules/comma-separated-tokens/index.js
+function stringify(values, options) {
+  const settings = options || {};
+  const input = values[values.length - 1] === "" ? [...values, ""] : values;
+  return input.join(
+    (settings.padRight ? " " : "") + "," + (settings.padLeft === false ? "" : " ")
+  ).trim();
+}
+
+// node_modules/hast-util-whitespace/lib/index.js
+var re = /[ \t\n\f\r]/g;
+function whitespace(thing) {
+  return typeof thing === "object" ? thing.type === "text" ? empty(thing.value) : false : empty(thing);
+}
+function empty(value) {
+  return value.replace(re, "") === "";
+}
 
 // node_modules/property-information/lib/util/schema.js
 var Schema = class {
@@ -237,7 +229,7 @@ var aria = create({
     ariaValueText: null,
     role: null
   },
-  transform(_, property) {
+  transform(_2, property) {
     return property === "role" ? property : "aria-" + property.slice(4).toLowerCase();
   }
 });
@@ -1190,7 +1182,7 @@ var xlink = create({
     xLinkType: null
   },
   space: "xlink",
-  transform(_, property) {
+  transform(_2, property) {
     return "xlink:" + property.slice(5).toLowerCase();
   }
 });
@@ -1207,7 +1199,7 @@ var xmlns = create({
 var xml = create({
   properties: { xmlBase: null, xmlLang: null, xmlSpace: null },
   space: "xml",
-  transform(_, property) {
+  transform(_2, property) {
     return "xml:" + property.slice(3).toLowerCase();
   }
 });
@@ -1252,16 +1244,80 @@ function camelcase($0) {
 var html2 = merge([aria, html, xlink, xmlns, xml], "html");
 var svg2 = merge([aria, svg, xlink, xmlns, xml], "svg");
 
+// node_modules/space-separated-tokens/index.js
+function stringify2(values) {
+  return values.join(" ").trim();
+}
+"function" == typeof Promise ? Promise.prototype.then.bind(Promise.resolve()) : setTimeout;
+
+// node_modules/@quartz-community/utils/dist/index.js
+function simplifySlug(fp) {
+  const res = stripSlashes(trimSuffix(fp, "index"));
+  return res.length === 0 ? "/" : res;
+}
+function endsWith(s2, suffix) {
+  return s2 === suffix || s2.endsWith("/" + suffix);
+}
+function trimSuffix(s2, suffix) {
+  if (endsWith(s2, suffix)) {
+    s2 = s2.slice(0, -suffix.length);
+  }
+  return s2;
+}
+function stripSlashes(s2, onlyStripPrefix) {
+  if (s2.startsWith("/")) {
+    s2 = s2.substring(1);
+  }
+  return s2;
+}
+function escapeHTML(unsafe) {
+  return unsafe.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+}
+
+// node_modules/@quartz-community/utils/dist/sort.js
+function getDate(data) {
+  const defaultDateType = data.defaultDateType;
+  if (!defaultDateType) {
+    return void 0;
+  }
+  const dates = data.dates;
+  return dates?.[defaultDateType];
+}
+
+// node_modules/html-void-elements/index.js
+var htmlVoidElements = [
+  "area",
+  "base",
+  "basefont",
+  "bgsound",
+  "br",
+  "col",
+  "command",
+  "embed",
+  "frame",
+  "hr",
+  "image",
+  "img",
+  "input",
+  "keygen",
+  "link",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr"
+];
+
 // node_modules/zwitch/index.js
-var own = {}.hasOwnProperty;
+var own2 = {}.hasOwnProperty;
 function zwitch(key2, options) {
   const settings = options || {};
   function one2(value, ...parameters) {
     let fn = one2.invalid;
     const handlers = one2.handlers;
-    if (value && own.call(value, key2)) {
+    if (value && own2.call(value, key2)) {
       const id = String(value[key2]);
-      fn = own.call(handlers, id) ? handlers[id] : one2.unknown;
+      fn = own2.call(handlers, id) ? handlers[id] : one2.unknown;
     }
     if (fn) {
       return fn.call(this, value, ...parameters);
@@ -1716,18 +1772,18 @@ var dangerous = [
 ];
 
 // node_modules/stringify-entities/lib/util/to-named.js
-var own2 = {}.hasOwnProperty;
+var own3 = {}.hasOwnProperty;
 var characters = {};
 var key;
 for (key in characterEntitiesHtml4) {
-  if (own2.call(characterEntitiesHtml4, key)) {
+  if (own3.call(characterEntitiesHtml4, key)) {
     characters[characterEntitiesHtml4[key]] = key;
   }
 }
 var notAlphanumericRegex = /[^\dA-Za-z]/;
 function toNamed(code, next, omit, attribute) {
   const character = String.fromCharCode(code);
-  if (own2.call(characters, character)) {
+  if (own3.call(characters, character)) {
     const name = characters[character];
     const value = "&" + name;
     if (omit && characterEntitiesLegacy.includes(name) && !dangerous.includes(name) && (!attribute || next && next !== 61 && notAlphanumericRegex.test(String.fromCharCode(next)))) {
@@ -1805,29 +1861,6 @@ function ccount(value, character) {
   return count;
 }
 
-// node_modules/comma-separated-tokens/index.js
-function stringify(values, options) {
-  const settings = options || {};
-  const input = values[values.length - 1] === "" ? [...values, ""] : values;
-  return input.join(
-    (settings.padRight ? " " : "") + "," + (settings.padLeft === false ? "" : " ")
-  ).trim();
-}
-
-// node_modules/space-separated-tokens/index.js
-function stringify2(values) {
-  return values.join(" ").trim();
-}
-
-// node_modules/hast-util-whitespace/lib/index.js
-var re = /[ \t\n\f\r]/g;
-function whitespace(thing) {
-  return typeof thing === "object" ? thing.type === "text" ? empty(thing.value) : false : empty(thing);
-}
-function empty(value) {
-  return value.replace(re, "") === "";
-}
-
 // node_modules/hast-util-to-html/lib/omission/util/siblings.js
 var siblingAfter = siblings(1);
 var siblingBefore = siblings(-1);
@@ -1849,11 +1882,11 @@ function siblings(increment2) {
 }
 
 // node_modules/hast-util-to-html/lib/omission/omission.js
-var own3 = {}.hasOwnProperty;
+var own4 = {}.hasOwnProperty;
 function omission(handlers) {
   return omit;
   function omit(node, index, parent) {
-    return own3.call(handlers, node.tagName) && handlers[node.tagName](node, index, parent);
+    return own4.call(handlers, node.tagName) && handlers[node.tagName](node, index, parent);
   }
 }
 
@@ -1869,7 +1902,7 @@ var closing = omission({
   li,
   optgroup,
   option,
-  p,
+  p: p2,
   rp: rubyElement,
   rt: rubyElement,
   tbody,
@@ -1879,67 +1912,67 @@ var closing = omission({
   thead,
   tr
 });
-function headOrColgroupOrCaption(_, index, parent) {
+function headOrColgroupOrCaption(_2, index, parent) {
   const next = siblingAfter(parent, index, true);
   return !next || next.type !== "comment" && !(next.type === "text" && whitespace(next.value.charAt(0)));
 }
-function html3(_, index, parent) {
+function html3(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type !== "comment";
 }
-function body(_, index, parent) {
+function body(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type !== "comment";
 }
-function p(_, index, parent) {
+function p2(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return next ? next.type === "element" && (next.tagName === "address" || next.tagName === "article" || next.tagName === "aside" || next.tagName === "blockquote" || next.tagName === "details" || next.tagName === "div" || next.tagName === "dl" || next.tagName === "fieldset" || next.tagName === "figcaption" || next.tagName === "figure" || next.tagName === "footer" || next.tagName === "form" || next.tagName === "h1" || next.tagName === "h2" || next.tagName === "h3" || next.tagName === "h4" || next.tagName === "h5" || next.tagName === "h6" || next.tagName === "header" || next.tagName === "hgroup" || next.tagName === "hr" || next.tagName === "main" || next.tagName === "menu" || next.tagName === "nav" || next.tagName === "ol" || next.tagName === "p" || next.tagName === "pre" || next.tagName === "section" || next.tagName === "table" || next.tagName === "ul") : !parent || // Confusing parent.
   !(parent.type === "element" && (parent.tagName === "a" || parent.tagName === "audio" || parent.tagName === "del" || parent.tagName === "ins" || parent.tagName === "map" || parent.tagName === "noscript" || parent.tagName === "video"));
 }
-function li(_, index, parent) {
+function li(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && next.tagName === "li";
 }
-function dt(_, index, parent) {
+function dt(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return Boolean(
     next && next.type === "element" && (next.tagName === "dt" || next.tagName === "dd")
   );
 }
-function dd(_, index, parent) {
+function dd(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && (next.tagName === "dt" || next.tagName === "dd");
 }
-function rubyElement(_, index, parent) {
+function rubyElement(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && (next.tagName === "rp" || next.tagName === "rt");
 }
-function optgroup(_, index, parent) {
+function optgroup(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && next.tagName === "optgroup";
 }
-function option(_, index, parent) {
+function option(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && (next.tagName === "option" || next.tagName === "optgroup");
 }
-function thead(_, index, parent) {
+function thead(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return Boolean(
     next && next.type === "element" && (next.tagName === "tbody" || next.tagName === "tfoot")
   );
 }
-function tbody(_, index, parent) {
+function tbody(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && (next.tagName === "tbody" || next.tagName === "tfoot");
 }
-function tfoot(_, index, parent) {
+function tfoot(_2, index, parent) {
   return !siblingAfter(parent, index);
 }
-function tr(_, index, parent) {
+function tr(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && next.tagName === "tr";
 }
-function cells(_, index, parent) {
+function cells(_2, index, parent) {
   const next = siblingAfter(parent, index);
   return !next || next.type === "element" && (next.tagName === "td" || next.tagName === "th");
 }
@@ -2066,8 +2099,8 @@ function serializeAttributes(state, properties) {
 }
 function serializeAttribute(state, key2, value) {
   const info = find(state.schema, key2);
-  const x = state.settings.allowParseErrors && state.schema.space === "html" ? 0 : 1;
-  const y = state.settings.allowDangerousCharacters ? 0 : 1;
+  const x2 = state.settings.allowParseErrors && state.schema.space === "html" ? 0 : 1;
+  const y2 = state.settings.allowDangerousCharacters ? 0 : 1;
   let quote = state.quote;
   let result;
   if (info.overloadedBoolean && (value === info.attribute || value === "")) {
@@ -2082,7 +2115,7 @@ function serializeAttribute(state, key2, value) {
     info.attribute,
     Object.assign({}, state.settings.characterReferences, {
       // Always encode without parse errors in non-HTML.
-      subset: constants.name[x][y]
+      subset: constants.name[x2][y2]
     })
   );
   if (value === true) return name;
@@ -2095,7 +2128,7 @@ function serializeAttribute(state, key2, value) {
       value,
       Object.assign({}, state.settings.characterReferences, {
         attribute: true,
-        subset: constants.unquoted[x][y]
+        subset: constants.unquoted[x2][y2]
       })
     );
   }
@@ -2107,7 +2140,7 @@ function serializeAttribute(state, key2, value) {
       value,
       Object.assign({}, state.settings.characterReferences, {
         // Always encode without parse errors in non-HTML.
-        subset: (quote === "'" ? constants.single : constants.double)[x][y],
+        subset: (quote === "'" ? constants.single : constants.double)[x2][y2],
         attribute: true
       })
     ) + quote;
@@ -2117,7 +2150,7 @@ function serializeAttribute(state, key2, value) {
 
 // node_modules/hast-util-to-html/lib/handle/text.js
 var textEntitySubset = ["<", "&"];
-function text(node, _, parent, state) {
+function text(node, _2, parent, state) {
   return parent && parent.type === "element" && (parent.tagName === "script" || parent.tagName === "style") ? node.value : stringifyEntities(
     node.value,
     Object.assign({}, state.settings.characterReferences, {
@@ -2229,11 +2262,11 @@ var write = async (args) => {
 };
 function generateSiteMap(cfg, idx) {
   const base = cfg.baseUrl ?? "";
-  const createURLEntry = (slug, content) => `<url>
-    <loc>https://${joinSegments(base, encodeURI(slug))}</loc>
+  const createURLEntry = (slug2, content) => `<url>
+    <loc>https://${joinSegments(base, encodeURI(slug2))}</loc>
     ${content.date && `<lastmod>${content.date.toISOString()}</lastmod>`}
   </url>`;
-  const urls = Array.from(idx).map(([slug, content]) => createURLEntry(simplifySlug(slug), content)).join("");
+  const urls = Array.from(idx).map(([slug2, content]) => createURLEntry(simplifySlug(slug2), content)).join("");
   return `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urls}</urlset>`;
 }
 function generateRSSFeed(cfg, idx, options, limit) {
@@ -2241,14 +2274,14 @@ function generateRSSFeed(cfg, idx, options, limit) {
   const pageTitle = cfg.pageTitle ?? "";
   const recentNotesText = options.rssRecentNotesText ?? "Recent notes";
   const lastFewNotesText = options.rssLastFewNotesText ?? ((count) => `Last ${count} notes`);
-  const createURLEntry = (slug, content) => `<item>
+  const createURLEntry = (slug2, content) => `<item>
     <title>${escapeHTML(content.title)}</title>
-    <link>https://${joinSegments(base, encodeURI(slug))}</link>
-    <guid>https://${joinSegments(base, encodeURI(slug))}</guid>
+    <link>https://${joinSegments(base, encodeURI(slug2))}</link>
+    <guid>https://${joinSegments(base, encodeURI(slug2))}</guid>
     <description><![CDATA[ ${content.richContent ?? content.description} ]]></description>
     <pubDate>${content.date?.toUTCString()}</pubDate>
   </item>`;
-  const items = Array.from(idx).sort(([_, f1], [__, f2]) => {
+  const items = Array.from(idx).sort(([_2, f1], [__, f2]) => {
     if (f1.date && f2.date) {
       return f2.date.getTime() - f1.date.getTime();
     } else if (f1.date && !f2.date) {
@@ -2257,7 +2290,7 @@ function generateRSSFeed(cfg, idx, options, limit) {
       return 1;
     }
     return f1.title.localeCompare(f2.title);
-  }).map(([slug, content]) => createURLEntry(simplifySlug(slug), content)).slice(0, limit ?? idx.size).join("");
+  }).map(([slug2, content]) => createURLEntry(simplifySlug(slug2), content)).slice(0, limit ?? idx.size).join("");
   const description = `${limit ? lastFewNotesText(limit) : recentNotesText} on ${escapeHTML(pageTitle)}`;
   return `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
@@ -2277,13 +2310,13 @@ var ContentIndex = (opts) => {
     const linkIndex = /* @__PURE__ */ new Map();
     for (const [tree, file] of content) {
       const data = file.data ?? {};
-      const slug = data.slug;
+      const slug2 = data.slug;
       const date = getDate(data) ?? /* @__PURE__ */ new Date();
       const text2 = data.text;
       if (options.includeEmptyFiles || text2 && text2 !== "") {
         const frontmatter = data.frontmatter ?? {};
-        linkIndex.set(slug, {
-          slug,
+        linkIndex.set(slug2, {
+          slug: slug2,
           filePath: data.relativePath,
           title: frontmatter.title ?? "",
           links: data.links ?? [],
@@ -2318,10 +2351,10 @@ var ContentIndex = (opts) => {
     }
     const fp = joinSegments("static", "contentIndex");
     const simplifiedIndex = Object.fromEntries(
-      Array.from(linkIndex).map(([slug, content2]) => {
+      Array.from(linkIndex).map(([slug2, content2]) => {
         delete content2.description;
         delete content2.date;
-        return [slug, content2];
+        return [slug2, content2];
       })
     );
     outputs.push(
