@@ -136,11 +136,13 @@ export const ContentIndex: QuartzEmitterPlugin<Partial<Options>> = (opts) => {
     const linkIndex: ContentIndexMap = new Map();
     for (const [tree, file] of content) {
       const data = (file.data as Record<string, unknown>) ?? {};
+      if (data.unlisted === true) continue;
       const slug = data.slug as FullSlug;
       const date = getDate(data as QuartzPluginData) ?? new Date();
       const text = data.text as string | undefined;
       if (options.includeEmptyFiles || (text && text !== "")) {
         const frontmatter = (data.frontmatter as Record<string, unknown> | undefined) ?? {};
+        const isEncrypted = data.encrypted === true;
         linkIndex.set(slug, {
           slug,
           filePath: data.relativePath as FilePath,
@@ -148,9 +150,10 @@ export const ContentIndex: QuartzEmitterPlugin<Partial<Options>> = (opts) => {
           links: (data.links as SimpleSlug[] | undefined) ?? [],
           tags: (frontmatter.tags as string[] | undefined) ?? [],
           content: text ?? "",
-          richContent: options.rssFullHtml
-            ? escapeHTML(toHtml(tree as Root, { allowDangerousHtml: true }))
-            : undefined,
+          richContent:
+            options.rssFullHtml && !isEncrypted
+              ? escapeHTML(toHtml(tree as Root, { allowDangerousHtml: true }))
+              : undefined,
           date: date,
           description: (data.description as string | undefined) ?? "",
         });

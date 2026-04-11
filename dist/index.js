@@ -2310,11 +2310,13 @@ var ContentIndex = (opts) => {
     const linkIndex = /* @__PURE__ */ new Map();
     for (const [tree, file] of content) {
       const data = file.data ?? {};
+      if (data.unlisted === true) continue;
       const slug2 = data.slug;
       const date = getDate(data) ?? /* @__PURE__ */ new Date();
       const text2 = data.text;
       if (options.includeEmptyFiles || text2 && text2 !== "") {
         const frontmatter = data.frontmatter ?? {};
+        const isEncrypted = data.encrypted === true;
         linkIndex.set(slug2, {
           slug: slug2,
           filePath: data.relativePath,
@@ -2322,7 +2324,7 @@ var ContentIndex = (opts) => {
           links: data.links ?? [],
           tags: frontmatter.tags ?? [],
           content: text2 ?? "",
-          richContent: options.rssFullHtml ? escapeHTML(toHtml(tree, { allowDangerousHtml: true })) : void 0,
+          richContent: options.rssFullHtml && !isEncrypted ? escapeHTML(toHtml(tree, { allowDangerousHtml: true })) : void 0,
           date,
           description: data.description ?? ""
         });
